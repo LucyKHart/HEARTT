@@ -13,9 +13,6 @@ from presidio_analyzer import AnalyzerEngine
 from presidio_anonymizer import AnonymizerEngine, OperatorConfig
 from presidio_anonymizer.operators import Operator, OperatorType
 import subprocess
-import tkinter as Tk
-from tkinter import Tk
-from tkinter.filedialog import askopenfilename
 def month_operation(dt, change, months_to_change):
     if change == 'add':
         return (dt + relativedelta(months=+months_to_change))
@@ -138,12 +135,11 @@ def analyze(PID, input_file_path):
     inputFileCSV = path
     outputLocation = "/Users/lucyhart/Desktop/HEARTT/Analyzer - AnonymizedTexts_0_20250604_122121.csv"
     cmd_to_execute = ["LIWC-22-cli",
-                    "--mode", "wc",
-                    "--input", inputFileCSV,
-                    "--column-indices", "4",
-                    "--row-id-indices", "3",
-                    "--output", outputLocation]
-
+                        "--mode", "wc",
+                        "--input", inputFileCSV,
+                        "--column-indices", "4",
+                        "--row-id-indices", "3",
+                        "--output", outputLocation]
     subprocess.call(cmd_to_execute)
 
     #join the output to the file result = 
@@ -152,3 +148,4 @@ def analyze(PID, input_file_path):
     result = pd.concat([df1, df4], axis=1)
 
     result.to_csv(outputLocation)
+

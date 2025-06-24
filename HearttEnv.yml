@@ -1,0 +1,17 @@
+name: base
+channels:
+  - conda-forge/label/spyder_rc
+  - conda-forge/label/spyder_dev
+  - conda-forge/label/spyder_kernels_rc
+  - conda-forge
+  - defaults
+  - https://repo.anaconda.com/pkgs/main
+  - https://repo.anaconda.com/pkgs/r
+dependencies:
+  - conda-forge::python-dateutil
+  - anaconda::numpy
+  - anaconda::pandas
+  - conda-forge::presidio-analyzer
+  - conda-forge::presidio-anonymizer
+  - anaconda::pip
+prefix: /Users/lucyhart/Library/spyder-6

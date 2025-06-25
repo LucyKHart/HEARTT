@@ -28,11 +28,7 @@ input_file_path = StringVar()
 def browsefunc():
     filename =filedialog.askopenfilename(filetypes=(("csv files","*.csv"),("All files","*.*")))
     input_file_entry.insert(END, filename)
-def submit_button_command():
-    frame1.pack_forget()
-    frame2.pack()
-    PID = PID.get()
-    input_file_path = input_file_path.get()
+
 
 
 
@@ -64,7 +60,7 @@ file_frame.pack(pady = 20, padx = 50)
 input_file_entry=Entry(file_frame,font=40, textvariable = input_file_path)
 select_button=Button(file_frame,text="Choose",font=40,command=browsefunc)
 input_file_label = Label(file_frame, text = 'Input File', font=('calibre',14, 'bold'))
-submit_button = Button (file_frame, text = "Submit", command = submit_button_command, activebackground='blue')
+submit_button = Button (file_frame, text = "Submit", command = window.destroy, activebackground='blue')
 
 input_file_label.grid(row = 0, column = 0)
 input_file_entry.grid(row = 0, column = 1)
@@ -83,5 +79,5 @@ window.mainloop()
 
 
 
-analyze(PID, input_file_path)
+analyze(PID.get(), input_file_path.get())
 

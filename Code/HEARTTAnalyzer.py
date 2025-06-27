@@ -13,6 +13,8 @@ from presidio_analyzer import AnalyzerEngine
 from presidio_anonymizer import AnonymizerEngine, OperatorConfig
 from presidio_anonymizer.operators import Operator, OperatorType
 import subprocess
+import tkinter as tk
+from tkinter import filedialog
 def month_operation(dt, change, months_to_change):
     if change == 'add':
         return (dt + relativedelta(months=+months_to_change))
@@ -21,8 +23,6 @@ def month_operation(dt, change, months_to_change):
 def create_benchmarks(USC_Date):
     months_around_assault = 3
     bucket_num = 8
-    dateEntry = USC_Date.split(sep="/")
-    USC_Date= datetime.date(int(dateEntry[1]), int(dateEntry[0]), 1)
     #turn into set, loop through
     benchmarks = []
     for i in range(bucket_num):
@@ -84,21 +84,30 @@ def count_unique_conversations(benchmarks, input_df, output):
                 prev_contact = curr_contact
         unique_conversations.append(unique_conv_count)
     output['Unique Conversations'] = unique_conversations
-def analyze(PID, input_file_path):
+def main():
     #=========get user input=======#
 
     #USC_Date = input("Enter the USC_Date in Month/Year form ex: 04/2025 \n")
 
     #woudl be nice to get this from the anonymized texts file 
-    USC_Date = "07/2024"
-    #Load in the data
 
+    #Load in the data
+    print("Starting HEARTT Analyzer...")
+    PID = input("Enter PID: ")
+    print("Select the .csv File of the Anonymized Texts")
+    input_file_path = filedialog.askopenfilename( filetypes=[("CSV files", "*.csv")])
+    print(input_file_path)
 
     input_df = pd.read_csv(input_file_path)
     print(input_df.head())
     print("Processing ", input_file_path)
+    
     #Replace NaN with empty string
     input_df = input_df.replace([np.nan, -np.inf],"" )
+
+    USC_Date = input_df.at[0,'USC_Date']
+    USC_Date = datetime.date.fromisoformat(USC_Date)
+    print(USC_Date)
     #outline structure of the empty output file
 
     #====Outline the Output File ===== #
@@ -127,12 +136,33 @@ def analyze(PID, input_file_path):
     add_benchmark_labels(benchmarks, input_df)
     create_sent_statistics(benchmarks, input_df, output)
     count_unique_conversations(benchmarks, input_df, output)
+    
+    #TO DO: switch to be based on input file. 
+    print("Please Select where you'd like the analysis to be stored")
+    root = tk.Tk()
+    root.withdraw() 
+    def select_directory():
 
-    output.to_csv("/Users/lucyhart/Desktop/HEARTT/newoutput.csv")
-    path = "/Users/lucyhart/Desktop/HEARTT/newoutput.csv"
+        dir_name = filedialog.askdirectory()
+        print(f"The selected directory is: {dir_name}")
+        return dir_name
+    directory = select_directory()
+    #create a new file
+    
+    outputLocation = directory+"/Analyzed-"+PID+".csv"
+    try: 
+        outputFile = open(outputLocation, "x")
+    except: 
+        print("A file with the name, Analyzed-",PID, "already exists")
+        title = input("Enter a new name for the file: ")
+        outputLocation = directory+"/" +title +".csv"
+        outputFile = open(outputLocation, "x")
+        
+    output.to_csv(outputLocation)
+    print("Process complete, view at ", outputLocation)
     #========LIWC ANALYSIS=======#
 
-    inputFileCSV = path
+    '''inputFileCSV = input_file_path
     outputLocation = "/Users/lucyhart/Desktop/HEARTT/Analyzer - AnonymizedTexts_0_20250604_122121.csv"
     cmd_to_execute = ["LIWC-22-cli",
                         "--mode", "wc",
@@ -147,5 +177,5 @@ def analyze(PID, input_file_path):
     df4 = pd.read_csv(outputLocation)
     result = pd.concat([df1, df4], axis=1)
 
-    result.to_csv(outputLocation)
-
+    result.to_csv(outputLocation)'''
+main()

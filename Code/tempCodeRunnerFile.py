@@ -75,9 +75,9 @@ frame2 = Frame(window)
 confirmation_message = Label(frame2, text = PID.get() +"\n"+input_file_path.get())
 confirmation_message.pack(pady = 20)
 
+
 window.mainloop()
 
 
 
 analyze(PID.get(), input_file_path.get())
-
